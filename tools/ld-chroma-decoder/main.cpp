@@ -243,11 +243,17 @@ int main(int argc, char *argv[])
                                            QCoreApplication::translate("main", "NTSC: Adjust phase per-line using burst phase"));
     parser.addOption(ntscPhaseCompOption);
 
-    // Option to set the 3D adaptive filter threshold
+    // Option to specify adaptive threshold multiplier
     QCommandLineOption adaptThresholdOption(QStringList() << "adapt-threshold",
-                                            QCoreApplication::translate("main", "NTSC: 3D adaptive filter threshold (default 1.0, higher = more 3D)"),
+                                            QCoreApplication::translate("main", "NTSC: Multiplier for the LINE_BONUS value in adaptive filtering (default 1.0)"),
                                             QCoreApplication::translate("main", "number"));
     parser.addOption(adaptThresholdOption);
+
+    // Option to specify chroma weight multiplier
+    QCommandLineOption chromaWeightOption(QStringList() << "chroma-weight",
+                                          QCoreApplication::translate("main", "NTSC: Multiplier for the iqPenalty weight in adaptive filtering (default 1.0)"),
+                                          QCoreApplication::translate("main", "number"));
+    parser.addOption(chromaWeightOption);
 
     // -- PAL decoder options --
 
@@ -407,10 +413,21 @@ int main(int argc, char *argv[])
     }
 
     if (parser.isSet(adaptThresholdOption)) {
-        combConfig.adaptThreshold = parser.value(adaptThresholdOption).toDouble();
+        combConfig.adaptThresholdMultiplier = parser.value(adaptThresholdOption).toDouble();
 
-        if (combConfig.adaptThreshold <= 0.0) {
-            qCritical("Adapt threshold must be greater than 0");
+        if (combConfig.adaptThresholdMultiplier < 0.0) {
+            // Quit with error
+            qCritical("Adapt threshold multiplier must not be negative");
+            return -1;
+        }
+    }
+
+    if (parser.isSet(chromaWeightOption)) {
+        combConfig.chromaWeight = parser.value(chromaWeightOption).toDouble();
+
+        if (combConfig.chromaWeight < 0.0) {
+            // Quit with error
+            qCritical("Chroma weight multiplier must not be negative");
             return -1;
         }
     }

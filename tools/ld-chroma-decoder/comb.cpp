@@ -428,10 +428,9 @@ void Comb::FrameBuffer::getBestCandidate(qint32 lineNumber, qint32 h,
     Candidate candidates[8];
 
     // Bias the comparison so that we prefer 3D results, then 2D, then 1D
-    // adaptThreshold scales these bonuses: higher = stronger 3D preference
-    const double LINE_BONUS = -2.0 * configuration.adaptThreshold;
-    const double FIELD_BONUS = LINE_BONUS - (2.0 * configuration.adaptThreshold);
-    const double FRAME_BONUS = FIELD_BONUS - (2.0 * configuration.adaptThreshold);
+    const double LINE_BONUS = -2.0 * configuration.adaptThresholdMultiplier;
+    const double FIELD_BONUS = LINE_BONUS - 2.0;
+    const double FRAME_BONUS = FIELD_BONUS - 2.0;
 
     // 1D: Same line, 2 samples left and right
     candidates[CAND_LEFT]  = getCandidate(lineNumber, h, *this, lineNumber, h - 2, 0);
@@ -520,7 +519,7 @@ Comb::FrameBuffer::Candidate Comb::FrameBuffer::getCandidate(qint32 refLineNumbe
         iqPenalty += fabs(refC - candidateC) * weights[offset + 1];
     }
     // Weaken this relative to luma, to avoid spurious colour in the 2D result from showing through
-    iqPenalty = (iqPenalty / 2 / irescale) * 0.28;
+    iqPenalty = (iqPenalty / 2 / irescale) * 0.28 * configuration.chromaWeight;
 
     result.penalty = yPenalty + iqPenalty + adjustPenalty;
     return result;

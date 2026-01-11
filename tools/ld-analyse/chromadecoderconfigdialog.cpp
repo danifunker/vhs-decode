@@ -426,8 +426,8 @@ void ChromaDecoderConfigDialog::on_showMapCheckBox_clicked()
 
 void ChromaDecoderConfigDialog::on_adaptThresholdHorizontalSlider_valueChanged(int value)
 {
-    ntscConfiguration.adaptThresholdMultiplier = static_cast<double>(value) / 100;
-    ui->adaptThresholdValueLabel->setText(QString::number(ntscConfiguration.adaptThresholdMultiplier, 'f', 2));
+    ntscConfiguration.adaptThreshold = static_cast<double>(value) / 100;
+    ui->adaptThresholdValueLabel->setText(QString::number(ntscConfiguration.adaptThreshold, 'f', 2));
     emit chromaDecoderConfigChanged();
 }
 

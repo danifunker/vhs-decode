@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
 
     // Option to set the chroma weight for 3D adaptive filter
     QCommandLineOption chromaWeightOption(QStringList() << "chroma-weight",
-                                          QCoreApplication::translate("main", "NTSC: Chroma weight for 3D adaptive filter (default 1.0)"),
+                                          QCoreApplication::translate("main", "NTSC: Chroma weight for 3D adaptive filter (default 1.0, higher = more 2D)"),
                                           QCoreApplication::translate("main", "number"));
     parser.addOption(chromaWeightOption);
 
